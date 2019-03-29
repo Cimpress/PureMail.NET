@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <RootNamespace>Example</RootNamespace>
+        <AssemblyName>Cimpress.PureMail.Example</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Cimpress.PureMail\Cimpress.PureMail.csproj" />
+    </ItemGroup>
+
+</Project>
