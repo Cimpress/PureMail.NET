@@ -10,8 +10,10 @@ script:
 deploy:
   skip_cleanup: true
   provider: script
-  script: dotnet nuget push Cimpress.PureMail/bin/Release/*.nupkg  -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY || echo "The version is there, skipping ..."
+  script: dotnet nuget push Cimpress.PureMail/bin/Release/*.nupkg  -s https://api.nuget.org/v3/index.json
+    -k $NUGET_API_KEY || echo "The version is there, skipping ..."
   on:
     branch: master
 env:
   global:
+    secure: XNvHLPZyItCAofbX5NBvKRe22aou+y2cgbDZ8Cpy+Ieo0zWsgeWNZeP4g1/nTaMwZHnQmZFoPIYtuH2P+TQhDGyFw3gj1HaxKtqZczw5Sc8HrYy7cZ0rU9tjKVZistIpczCzdksnccFs/mWb3vP0+PpxmERVh1pOq4SfGysg5920NUtvI0TE6eCokn3Ijmg/gVL1ttablOLIRj4XGq0PQaPK2J0qquXYjIWzlWckeLPyJr61V9CJLaH3XYnZu2DmqdWU1R49BV7QtTY7tZdcX9DIumze4Ihu8XBHoZF3Q8h1TOhEVMpgsWSCwCsHOuOxymBiWpWCoSeW9iuUHCGl2kvSCLFRDgY49KzX96vbboii1ef6i/hHL6wZBQPeGrgCgkEoSLHdHZPDJsJa3sWjYr0PX5kMxqtpTzETsJFNavfpBUQJn7DUr4/bB+qEzXa5Yu6oUlFHEjiOdG1OMppBEtKWHAU6aC86uOdSR/21oK3LoAS3oVu2l26P8Br/CfmMU10KxVddTmL75eFsuWqXV0PlWlXUItzmHpYef+uVMfW0xyXmkGcNddixEHxeyM3fSXOg7Mt5L79YeDI2Cie0AfsyvBaLhESevBvXOgn4cLkrinNWYfc0JyANbh0BAy9k+Hy0SuUAazqQl5IGMJHNYXqHZJvQUBu+wI5cm+Zn17Q=
