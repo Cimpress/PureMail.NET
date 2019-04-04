@@ -12,16 +12,19 @@ namespace Example
                 Console.WriteLine("Provide access token as argument");
                 return;
             }
+            
             Console.WriteLine("Trying to request email");
 
             var pureMailClient = new PureMailClient();
-            var response = pureMailClient.SendTemplatedEmail(args[0], "demo-template", new
-            {
-                property = "customised-value"
-            });
 
-            response.Wait();
-            Console.WriteLine("Sent");
+            var pureMailResponse = pureMailClient.TemplatedEmail(args[0])
+                .SetTemplateId("demo-template")
+                .Send(new
+                {
+                    property= "asd"
+                }).Result;
+
+            Console.WriteLine($"Sent {pureMailResponse.RequestId}");
         }
     }
 }

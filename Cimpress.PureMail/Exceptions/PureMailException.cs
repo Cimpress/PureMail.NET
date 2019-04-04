@@ -1,7 +1,7 @@
-﻿namespace InvoiceDataStore.BL.Clients.PureMail
-{
-    using System;
+﻿using System;
 
+namespace Cimpress.PureMail.Exceptions
+{
     public class PureMailException : Exception
     {
         private readonly string additional;
