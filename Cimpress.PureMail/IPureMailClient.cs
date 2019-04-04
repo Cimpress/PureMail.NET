@@ -1,9 +1,7 @@
-﻿using System.Threading.Tasks;
-
-namespace Cimpress.PureMail
+﻿namespace Cimpress.PureMail
 {
     public interface IPureMailClient
     {
-        Task SendTemplatedEmail<T>(string accessToken, string templateId, T payload);
+        ITemplatedEmailRequest TemplatedEmail(string accessToken);
     }
 }

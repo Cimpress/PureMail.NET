@@ -2,9 +2,9 @@ using System.IO;
 using Newtonsoft.Json;
 using RestSharp.Serializers;
 
-namespace Cimpress.PureMail
+namespace Cimpress.PureMail.Implementation
 {
-	public class JsonSerializer : ISerializer
+	internal class JsonSerializer : ISerializer
 	{
 	    private readonly Newtonsoft.Json.JsonSerializer _serializer;
         

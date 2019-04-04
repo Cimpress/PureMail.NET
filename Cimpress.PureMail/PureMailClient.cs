@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-using Cimpress.PureMail.Exceptions;
-using InvoiceDataStore.BL.Clients.PureMail;
+﻿using System.Runtime.CompilerServices;
+using Cimpress.PureMail.Implementation;
 using Microsoft.Extensions.Logging;
 using RestSharp;
+
+[assembly:InternalsVisibleTo("Cimpress.Puremail.UnitTests")]
 
 namespace Cimpress.PureMail
 {
@@ -10,53 +11,30 @@ namespace Cimpress.PureMail
     {
         private readonly IRestClient _client;
      
-        private static ILogger _logger;
-
-        public PureMailClient(PureMailClientOptions options, ILogger logger, IRestClient restClient)
-        {
-            _client = restClient;
-            _logger = logger ?? new LoggerFactory().CreateLogger("StereotypeClient");
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PureMailClient"/> class.
-        /// </summary>
-        /// <param name="options"></param>
-        /// <param name="logger"></param>
-        public PureMailClient(PureMailClientOptions options, ILogger logger = null) : this(options, logger, new RestClient(options.PureMailUrlBaseUrl))
-        {
-        }
-
-        public PureMailClient() : this(new PureMailClientOptions(), null, new RestClient("https://puremail.trdlnk.cimpress.io"))
-        {
-        }
-
+        private static ILogger<PureMailClient> _logger;
         
-        public async Task SendTemplatedEmail<T>(string accessToken, string templateId, T payload)
+        private readonly PureMailClientOptions _options;
+
+
+        public PureMailClient() : this(null, null,  null)
         {
-            var request = new RestRequest("/v1/send/{templateId}", Method.POST);
-            request.JsonSerializer = new JsonSerializer();
+        }
 
-            request.AddHeader("Authorization", $"Bearer {accessToken}");
-            request.AddHeader("Content-type", "application/json");
-            request.AddUrlSegment("templateId", templateId);
+        public PureMailClient(PureMailClientOptions options, ILogger<PureMailClient> logger) : this(options, logger, new RestClient(options.ServiceBaseUrl))
+        {
+        }
 
-            _logger.LogDebug($">> POST /v1/send/{templateId}");
-            request.AddJsonBody(payload);
+        // TODO: This should be internal
+        internal PureMailClient(PureMailClientOptions options, ILogger<PureMailClient> logger, IRestClient restClient)
+        {
+            _options = options ?? new PureMailClientOptions {ServiceBaseUrl = "https://puremail.trdlnk.cimpress.io"};
+            _client = restClient ?? new RestClient(_options.ServiceBaseUrl);
+            _logger = logger;
+        }
 
-            var response = await this._client.ExecuteTaskAsync(request);
-            _logger.LogDebug($"<< POST /v1/send/{templateId} :: {response.StatusCode}");
-            switch (response.StatusCode)
-            {
-                case System.Net.HttpStatusCode.Accepted:
-                    return;
-                case System.Net.HttpStatusCode.Unauthorized:
-                    throw new AuthenticationException("Incorrect authentication");
-                case System.Net.HttpStatusCode.Forbidden:
-                    throw new AuthorizationException("Insufficient permission level to access materialization");     
-                default:
-                    throw new PureMailException($"Unexpected status code {response.StatusCode}", null);
-            }
+        public ITemplatedEmailRequest TemplatedEmail(string accessToken)
+        {
+            return new TemplatedEmailRequest(accessToken, _options, _logger, _client);
         }
     }
 }
