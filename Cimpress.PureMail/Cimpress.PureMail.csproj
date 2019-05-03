@@ -9,7 +9,7 @@
     <Product>Fulfillment Location Client for .NET Core</Product>
     <PackageId>Cimpress.PureMail</PackageId>
     <Description>Client for using PureMail</Description>
-    <PackageVersion>0.1.0</PackageVersion>
+    <PackageVersion>0.2.0</PackageVersion>
     <Title>Cimpress PureMail Client</Title>
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>

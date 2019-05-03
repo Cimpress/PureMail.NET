@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Cimpress.PureMail.Exceptions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -18,6 +19,10 @@ namespace Cimpress.PureMail.Implementation
         
         private string _templateId;
         
+        private readonly IList<string> _whitelistedRelations = new List<string>();
+        
+        private readonly IList<string> _blacklistedRelations = new List<string>();
+        
         public TemplatedEmailRequest(string accessToken, PureMailClientOptions options, ILogger<PureMailClient> logger, IRestClient restClient)
         {
             _pureMailClientOptions = options;
@@ -36,16 +41,39 @@ namespace Cimpress.PureMail.Implementation
             _templateId = templateId;
             return this;
         }
-               
+
+        public ITemplatedEmailRequest WithWhitelistedRelation(string whiteListEntry)
+        {
+            _whitelistedRelations.Add(whiteListEntry);
+            return this;
+        }
+
+        public ITemplatedEmailRequest WithBlacklistedRelation(string blackListEntry)
+        {
+            _blacklistedRelations.Add(blackListEntry);
+            return this;
+        }
+
         public async Task<IPureMailResponse> Send<TO>(TO payload)
         {
             var request = new RestRequest("/v1/send/{templateId}", Method.POST);
             request.JsonSerializer = new JsonSerializer();
 
+            request.AddUrlSegment("templateId", _templateId);
+
             request.AddHeader("Authorization", $"Bearer {_accessToken}");
             request.AddHeader("Content-type", "application/json");
-            request.AddUrlSegment("templateId", _templateId);
             request.AddHeader("x-cimpress-accept-preference", _pureMailClientOptions.AcceptPreference);
+
+            if (_whitelistedRelations.Count > 0)
+            {
+                request.AddHeader("x-cimpress-rel-whitelist", string.Join(",", _whitelistedRelations)); 
+            }
+            
+            if (_blacklistedRelations.Count > 0)
+            {
+                request.AddHeader("x-cimpress-rel-blacklist", string.Join(",", _blacklistedRelations)); 
+            }
             
             _logger?.LogDebug($">> POST /v1/send/{_templateId} :: payload={JsonConvert.SerializeObject(payload)}");
             request.AddJsonBody(payload);
